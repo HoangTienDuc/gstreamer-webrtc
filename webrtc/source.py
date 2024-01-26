@@ -237,11 +237,11 @@ class RTMPSource(Source):
         self.audio_srcpad = None
 
         rtmpsrc.link(parsebin)
-        parsebin.connect('pad-added', self._new_parsed_pad)
 
         self.audiobin = Gst.parse_bin_from_description(RTMP_AUDIO_BIN_STR,True)
         self.videobin = Gst.parse_bin_from_description(RTMP_VIDEO_BIN_STR,True)
 
+        parsebin.connect('pad-added', self._new_parsed_pad)
 
     @property
     def audio_pad(self):
@@ -282,9 +282,19 @@ faad ! audioconvert ! audioresample ! opusenc ! rtpopuspay !
 application/x-rtp,media=audio,encoding-name=OPUS,payload=100,clock-rate=48000 ! queue
 '''
 
+# RTSP_VIDEO_BIN_STR = '''
+# rtph264pay config-interval=-1 ! application/x-rtp,media=video,encoding-name=H264,payload=98,clock-rate=90000 ! queue
+# '''
+# BEGIN: EXAMPLE_RTSP_VIDEO_BIN_STR
+
 RTSP_VIDEO_BIN_STR = '''
 rtph264pay config-interval=-1 ! application/x-rtp,media=video,encoding-name=H264,payload=98,clock-rate=90000 ! queue
 '''
+# END: EXAMPLE_RTSP_VIDEO_BIN_STR
+# RTSP_VIDEO_BIN_STR = '''
+    # rtsph264depay ! h264parse ! avdec_h264 ! videoconvert ! queue
+# '''
+
 
 
 class RTSPSource(Source):
@@ -307,11 +317,11 @@ class RTSPSource(Source):
 
 
         rtspsrc.link(parsebin)
-        parsebin.connect('pad-added', self._new_parsed_pad)
 
         self.audiobin = Gst.parse_bin_from_description(RTSP_AUDIO_BIN_STR,True)
         self.videobin = Gst.parse_bin_from_description(RTSP_VIDEO_BIN_STR,True)
 
+        parsebin.connect('pad-added', self._new_parsed_pad)
 
     @property
     def audio_pad(self):
@@ -323,7 +333,7 @@ class RTSPSource(Source):
 
 
     def _new_parsed_pad(self, element, pad):
-
+        print("On _new_parsed_pad")
         caps = pad.get_current_caps()
         name = caps.to_string()
 

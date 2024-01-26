@@ -10,7 +10,7 @@ gi.require_version('GstWebRTC', '1.0')
 from gi.repository import GstWebRTC
 
 from webrtc import WebRTC
-from webrtc import TestSource
+from webrtc import TestSource, RTSPSource
 
 loop = GLib.MainLoop()
 
@@ -34,7 +34,9 @@ time.sleep(1)
 
 pc.create_offer()
 
-source = TestSource()
+url = "rtsp://0.0.0.0:8555/unicast"
+source  = RTSPSource(url)
+# source = TestSource()
 
 pc.add_stream(source)
 
